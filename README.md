@@ -1,8 +1,9 @@
+[![Gem Version](https://badge.fury.io/rb/openskill.svg)](https://badge.fury.io/rb/openskill)
+
 # OpenSkill
 
 A Ruby implementation of the OpenSkill rating system for multiplayer games. OpenSkill is a Bayesian skill rating system that can handle teams of varying sizes, asymmetric matches, and complex game scenarios.
 
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)]()
 [![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.1.0-red.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -239,6 +240,7 @@ OpenSkill uses a Bayesian approach to model player skill as a normal distributio
 - **σ (sigma)**: The uncertainty about the skill level
 
 After each match:
+
 1. Compute team strengths from individual player ratings
 2. Calculate expected outcomes based on team strengths
 3. Update ratings based on actual vs expected performance
@@ -249,12 +251,14 @@ The **ordinal** value (`μ - 3σ`) provides a conservative estimate where the tr
 ## Why OpenSkill?
 
 ### vs Elo
+
 - ✅ Handles multiplayer (3+ players/teams)
 - ✅ Works with team games
 - ✅ Accounts for rating uncertainty
 - ✅ Faster convergence to true skill
 
 ### vs TrueSkill
+
 - ✅ Open source (MIT license)
 - ✅ Faster computation
 - ✅ Similar accuracy
@@ -264,14 +268,14 @@ The **ordinal** value (`μ - 3σ`) provides a conservative estimate where the tr
 
 This Ruby implementation uses idiomatic Ruby naming conventions:
 
-| Python API | Ruby API |
-|------------|----------|
-| `model.rating()` | `model.create_rating` |
-| `model.create_rating([25, 8.3])` | `model.load_rating([25, 8.3])` |
-| `model.rate(teams)` | `model.calculate_ratings(teams)` |
-| `model.predict_win(teams)` | `model.predict_win_probability(teams)` |
-| `model.predict_draw(teams)` | `model.predict_draw_probability(teams)` |
-| `model.predict_rank(teams)` | `model.predict_rank_probability(teams)` |
+| Python API                       | Ruby API                                |
+| -------------------------------- | --------------------------------------- |
+| `model.rating()`                 | `model.create_rating`                   |
+| `model.create_rating([25, 8.3])` | `model.load_rating([25, 8.3])`          |
+| `model.rate(teams)`              | `model.calculate_ratings(teams)`        |
+| `model.predict_win(teams)`       | `model.predict_win_probability(teams)`  |
+| `model.predict_draw(teams)`      | `model.predict_draw_probability(teams)` |
+| `model.predict_rank(teams)`      | `model.predict_rank_probability(teams)` |
 
 ## Examples
 
@@ -312,23 +316,23 @@ updated = model.calculate_ratings(
 ```ruby
 class Player
   attr_accessor :name, :mu, :sigma
-  
+
   def initialize(name, model)
     @name = name
     rating = model.create_rating
     @mu = rating.mu
     @sigma = rating.sigma
   end
-  
+
   def to_rating(model)
     model.load_rating([@mu, @sigma], name: @name)
   end
-  
+
   def update_from_rating!(rating)
     @mu = rating.mu
     @sigma = rating.sigma
   end
-  
+
   def ordinal(z: 3.0)
     @mu - z * @sigma
   end
