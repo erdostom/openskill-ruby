@@ -1,9 +1,9 @@
-[![Gem Version](https://badge.fury.io/rb/openskill.svg)](https://badge.fury.io/rb/openskill)
-
 # OpenSkill
 
 A Ruby implementation of the OpenSkill rating system for multiplayer games. OpenSkill is a Bayesian skill rating system that can handle teams of varying sizes, asymmetric matches, and complex game scenarios.
 
+[![Gem Version](https://badge.fury.io/rb/openskill.svg)](https://badge.fury.io/rb/openskill)
+![](https://github.com/erdostom/openskill-ruby/actions/workflows/test.yml/badge.svg)
 [![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.1.0-red.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
