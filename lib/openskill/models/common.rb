@@ -57,6 +57,75 @@ module OpenSkill
 
         [sorted_objects, restoration_indices]
       end
+
+      # The V function as defined in Weng-Lin 2011
+      # Computes phi_minor(x-t) / phi_major(x-t)
+      #
+      # @param x [Float] input value
+      # @param t [Float] threshold value
+      # @return [Float] the V function result
+      def self.v(x, t)
+        xt = x - t
+        denominator = Statistics::Normal.cdf(xt)
+
+        return -xt if denominator < Float::EPSILON
+
+        Statistics::Normal.pdf(xt) / denominator
+      end
+
+      # The W function as defined in Weng-Lin 2011
+      # Computes V(x,t) * (V(x,t) + (x-t))
+      #
+      # @param x [Float] input value
+      # @param t [Float] threshold value
+      # @return [Float] the W function result
+      def self.w(x, t)
+        xt = x - t
+        denominator = Statistics::Normal.cdf(xt)
+
+        if denominator < Float::EPSILON
+          return x < 0 ? 1.0 : 0.0
+        end
+
+        v_val = v(x, t)
+        v_val * (v_val + xt)
+      end
+
+      # The V-tilde function for draws as defined in Weng-Lin 2011
+      # Handles doubly truncated Gaussians
+      #
+      # @param x [Float] input value
+      # @param t [Float] threshold value
+      # @return [Float] the V-tilde function result
+      def self.vt(x, t)
+        xx = x.abs
+        b = Statistics::Normal.cdf(t - xx) - Statistics::Normal.cdf(-t - xx)
+
+        if b < 1e-5
+          return x < 0 ? (-x - t) : (-x + t)
+        end
+
+        a = Statistics::Normal.pdf(-t - xx) - Statistics::Normal.pdf(t - xx)
+        (x < 0 ? -a : a) / b
+      end
+
+      # The W-tilde function for draws as defined in Weng-Lin 2011
+      # Handles variance for doubly truncated Gaussians
+      #
+      # @param x [Float] input value
+      # @param t [Float] threshold value
+      # @return [Float] the W-tilde function result
+      def self.wt(x, t)
+        xx = x.abs
+        b = Statistics::Normal.cdf(t - xx) - Statistics::Normal.cdf(-t - xx)
+
+        return 1.0 if b < Float::EPSILON
+
+        numerator = ((t - xx) * Statistics::Normal.pdf(t - xx) +
+                    (t + xx) * Statistics::Normal.pdf(-t - xx))
+        vt_val = vt(x, t)
+        numerator / b + vt_val * vt_val
+      end
     end
   end
 end

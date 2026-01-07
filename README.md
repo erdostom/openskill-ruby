@@ -16,6 +16,7 @@ A Ruby implementation of the OpenSkill rating system for multiplayer games. Open
 - 🔢 **Player Weights**: Account for partial participation or contribution
 - 📈 **Score Margins**: Factor in impressive wins
 - 🔄 **Tie Handling**: Properly handle drawn matches
+- 🎲 **5 Rating Models**: PlackettLuce, BradleyTerryFull, BradleyTerryPart, ThurstoneMostellerFull, ThurstoneMostellerPart
 - ⚡ **Fast**: Efficient Ruby implementation
 - 🧪 **Well Tested**: Comprehensive test suite matching reference implementation
 
@@ -39,13 +40,31 @@ Or install it yourself as:
 gem install openskill
 ```
 
+## Available Models
+
+OpenSkill Ruby includes 5 rating models from the Weng-Lin family:
+
+- **PlackettLuce** - Multidimensional model, recommended default (Algorithm 4)
+- **BradleyTerryFull** - Full pairing with logistic regression (Algorithm 1)
+- **BradleyTerryPart** - Partial pairing with sliding window, more efficient (Algorithm 2)
+- **ThurstoneMostellerFull** - Full pairing with Gaussian CDF (Algorithm 3)
+- **ThurstoneMostellerPart** - Partial pairing with Gaussian CDF, most efficient
+
+All models support the same API and features. Choose based on your accuracy vs performance needs.
+
 ## Quick Start
 
 ```ruby
 require 'openskill'
 
-# Create a model (Plackett-Luce by default)
+# Create a model (PlackettLuce recommended)
 model = OpenSkill::Models::PlackettLuce.new
+
+# Or use other models:
+# model = OpenSkill::Models::BradleyTerryFull.new
+# model = OpenSkill::Models::BradleyTerryPart.new(window_size: 4)
+# model = OpenSkill::Models::ThurstoneMostellerFull.new(epsilon: 0.1)
+# model = OpenSkill::Models::ThurstoneMostellerPart.new(epsilon: 0.1, window_size: 4)
 
 # Create player ratings
 alice = model.create_rating(name: "Alice")
