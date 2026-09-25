@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'distribution'
+require "distribution"
 
 module OpenSkill
   module Statistics

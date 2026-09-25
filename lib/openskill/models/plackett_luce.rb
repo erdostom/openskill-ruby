@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'securerandom'
-require_relative '../statistics/normal'
-require_relative 'common'
+require "securerandom"
+require_relative "../statistics/normal"
+require_relative "common"
 
 module OpenSkill
   module Models
@@ -71,8 +71,8 @@ module OpenSkill
       # @raise [ArgumentError] if rating_array is invalid
       def load_rating(rating_array, name: nil)
         raise ArgumentError, "Rating must be an Array, got #{rating_array.class}" unless rating_array.is_a?(Array)
-        raise ArgumentError, 'Rating array must have exactly 2 elements' unless rating_array.size == 2
-        raise ArgumentError, 'Rating values must be numeric' unless rating_array.all? { |v| v.is_a?(Numeric) }
+        raise ArgumentError, "Rating array must have exactly 2 elements" unless rating_array.size == 2
+        raise ArgumentError, "Rating values must be numeric" unless rating_array.all? { |v| v.is_a?(Numeric) }
 
         Rating.new(mu: rating_array[0], sigma: rating_array[1], name: name)
       end
@@ -93,7 +93,7 @@ module OpenSkill
         validate_weights!(teams, weights) if weights
 
         # Can't have both ranks and scores
-        raise ArgumentError, 'Cannot provide both ranks and scores' if ranks && scores
+        raise ArgumentError, "Cannot provide both ranks and scores" if ranks && scores
 
         # Deep copy teams to avoid mutating input
         original_teams = teams
@@ -300,25 +300,25 @@ module OpenSkill
         end
 
         def <(other)
-          raise ArgumentError, 'comparison with non-Rating' unless other.is_a?(Rating)
+          raise ArgumentError, "comparison with non-Rating" unless other.is_a?(Rating)
 
           ordinal < other.ordinal
         end
 
         def >(other)
-          raise ArgumentError, 'comparison with non-Rating' unless other.is_a?(Rating)
+          raise ArgumentError, "comparison with non-Rating" unless other.is_a?(Rating)
 
           ordinal > other.ordinal
         end
 
         def <=(other)
-          raise ArgumentError, 'comparison with non-Rating' unless other.is_a?(Rating)
+          raise ArgumentError, "comparison with non-Rating" unless other.is_a?(Rating)
 
           ordinal <= other.ordinal
         end
 
         def >=(other)
-          raise ArgumentError, 'comparison with non-Rating' unless other.is_a?(Rating)
+          raise ArgumentError, "comparison with non-Rating" unless other.is_a?(Rating)
 
           ordinal >= other.ordinal
         end
@@ -377,8 +377,8 @@ module OpenSkill
 
       # Validate teams structure
       def validate_teams!(teams)
-        raise ArgumentError, 'Teams must be an Array' unless teams.is_a?(Array)
-        raise ArgumentError, 'Must have at least 2 teams' if teams.size < 2
+        raise ArgumentError, "Teams must be an Array" unless teams.is_a?(Array)
+        raise ArgumentError, "Must have at least 2 teams" if teams.size < 2
 
         teams.each_with_index do |team, idx|
           raise ArgumentError, "Team #{idx} must be an Array" unless team.is_a?(Array)
@@ -393,7 +393,7 @@ module OpenSkill
       # Validate ranks
       def validate_ranks!(teams, ranks)
         raise ArgumentError, "Ranks must be an Array, got #{ranks.class}" unless ranks.is_a?(Array)
-        raise ArgumentError, 'Ranks must have same length as teams' if ranks.size != teams.size
+        raise ArgumentError, "Ranks must have same length as teams" if ranks.size != teams.size
 
         ranks.each do |rank|
           raise ArgumentError, "All ranks must be numeric, got #{rank.class}" unless rank.is_a?(Numeric)
@@ -403,7 +403,7 @@ module OpenSkill
       # Validate scores
       def validate_scores!(teams, scores)
         raise ArgumentError, "Scores must be an Array, got #{scores.class}" unless scores.is_a?(Array)
-        raise ArgumentError, 'Scores must have same length as teams' if scores.size != teams.size
+        raise ArgumentError, "Scores must have same length as teams" if scores.size != teams.size
 
         scores.each do |score|
           raise ArgumentError, "All scores must be numeric, got #{score.class}" unless score.is_a?(Numeric)
@@ -413,7 +413,7 @@ module OpenSkill
       # Validate weights
       def validate_weights!(teams, weights)
         raise ArgumentError, "Weights must be an Array, got #{weights.class}" unless weights.is_a?(Array)
-        raise ArgumentError, 'Weights must have same length as teams' if weights.size != teams.size
+        raise ArgumentError, "Weights must have same length as teams" if weights.size != teams.size
 
         weights.each_with_index do |team_weights, idx|
           raise ArgumentError, "Weights for team #{idx} must be an Array" unless team_weights.is_a?(Array)
@@ -481,7 +481,7 @@ module OpenSkill
               comparison_count += 1
             end
 
-            adjusted_mu += comparison_count > 0 ? (margin_adjustment / comparison_count) : margin_adjustment
+            adjusted_mu += (comparison_count > 0) ? (margin_adjustment / comparison_count) : margin_adjustment
           end
 
           summed = Math.exp(adjusted_mu / c_value)
@@ -516,11 +516,11 @@ module OpenSkill
 
           sorted_team.each do |player|
             balance_weight = if @balance
-                               ordinal_diff = max_ordinal - player.ordinal
-                               1 + (ordinal_diff / (max_ordinal + @kappa))
-                             else
-                               1.0
-                             end
+              ordinal_diff = max_ordinal - player.ordinal
+              1 + (ordinal_diff / (max_ordinal + @kappa))
+            else
+              1.0
+            end
 
             mu_sum += player.mu * balance_weight
             sigma_squared_sum += (player.sigma * balance_weight)**2
@@ -540,10 +540,10 @@ module OpenSkill
         return [] if game.empty?
 
         team_scores = if ranks
-                        ranks.each_with_index.map { |rank, idx| rank || idx }
-                      else
-                        game.each_index.to_a
-                      end
+          ranks.each_with_index.map { |rank, idx| rank || idx }
+        else
+          game.each_index.to_a
+        end
 
         sorted_scores = team_scores.sort
         rank_map = {}
@@ -603,7 +603,7 @@ module OpenSkill
               comparison_count += 1
             end
 
-            adjusted_mu_i += comparison_count > 0 ? (margin_adjustment / comparison_count) : margin_adjustment
+            adjusted_mu_i += (comparison_count > 0) ? (margin_adjustment / comparison_count) : margin_adjustment
           end
 
           i_mu_over_c = Math.exp(adjusted_mu_i / c_value)

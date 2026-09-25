@@ -84,7 +84,7 @@ module OpenSkill
         denominator = Statistics::Normal.cdf(xt)
 
         if denominator < Float::EPSILON
-          return x < 0 ? 1.0 : 0.0
+          return (x < 0) ? 1.0 : 0.0
         end
 
         v_val = v(x, t)
@@ -102,11 +102,11 @@ module OpenSkill
         b = Statistics::Normal.cdf(t - xx) - Statistics::Normal.cdf(-t - xx)
 
         if b < 1e-5
-          return x < 0 ? (-x - t) : (-x + t)
+          return (x < 0) ? (-x - t) : (-x + t)
         end
 
         a = Statistics::Normal.pdf(-t - xx) - Statistics::Normal.pdf(t - xx)
-        (x < 0 ? -a : a) / b
+        ((x < 0) ? -a : a) / b
       end
 
       # The W-tilde function for draws as defined in Weng-Lin 2011

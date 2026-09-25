@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'test_helper'
+require "test_helper"
 
 module OpenSkill
   module Models
     class TestPlackettLuce < Minitest::Test
       def setup
         @model = PlackettLuce.new
-        @fixture_path = File.expand_path('../../fixtures/plackettluce.json', __dir__)
+        @fixture_path = File.expand_path("../../fixtures/plackettluce.json", __dir__)
         @data = JSON.parse(File.read(@fixture_path))
       end
 
@@ -27,15 +27,15 @@ module OpenSkill
         assert_in_delta 25.0 / 3.0, rating.sigma, 0.0001
         assert_nil rating.name
 
-        rating_with_name = @model.create_rating(name: 'Alice')
-        assert_equal 'Alice', rating_with_name.name
+        rating_with_name = @model.create_rating(name: "Alice")
+        assert_equal "Alice", rating_with_name.name
       end
 
       def test_rating_with_custom_values
-        rating = @model.create_rating(mu: 30.0, sigma: 5.0, name: 'Bob')
+        rating = @model.create_rating(mu: 30.0, sigma: 5.0, name: "Bob")
         assert_equal 30.0, rating.mu
         assert_equal 5.0, rating.sigma
-        assert_equal 'Bob', rating.name
+        assert_equal "Bob", rating.name
       end
 
       def test_load_rating
@@ -43,14 +43,14 @@ module OpenSkill
         assert_equal 30.0, rating.mu
         assert_equal 5.0, rating.sigma
 
-        rating_with_name = @model.load_rating([28.0, 6.5], name: 'Charlie')
-        assert_equal 'Charlie', rating_with_name.name
+        rating_with_name = @model.load_rating([28.0, 6.5], name: "Charlie")
+        assert_equal "Charlie", rating_with_name.name
       end
 
       def test_load_rating_errors
-        assert_raises(ArgumentError) { @model.load_rating('invalid') }
+        assert_raises(ArgumentError) { @model.load_rating("invalid") }
         assert_raises(ArgumentError) { @model.load_rating([1, 2, 3]) }
-        assert_raises(ArgumentError) { @model.load_rating([1, 'invalid']) }
+        assert_raises(ArgumentError) { @model.load_rating([1, "invalid"]) }
       end
 
       def test_rating_ordinal
@@ -83,8 +83,8 @@ module OpenSkill
       end
 
       def test_calculate_ratings_basic
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma)
 
         team1 = [model.create_rating]
@@ -92,12 +92,12 @@ module OpenSkill
 
         result = model.calculate_ratings([team1, team2])
 
-        check_expected(@data, 'normal', result)
+        check_expected(@data, "normal", result)
       end
 
       def test_calculate_ratings_with_ranks
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma)
 
         team1 = [model.create_rating]
@@ -110,12 +110,12 @@ module OpenSkill
           ranks: [2, 1, 4, 3]
         )
 
-        check_expected(@data, 'ranks', result)
+        check_expected(@data, "ranks", result)
       end
 
       def test_calculate_ratings_with_scores
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma)
 
         team1 = [model.create_rating]
@@ -126,12 +126,12 @@ module OpenSkill
           scores: [1, 2]
         )
 
-        check_expected(@data, 'scores', result)
+        check_expected(@data, "scores", result)
       end
 
       def test_calculate_ratings_with_margins
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma, margin: 2.0)
 
         game = Array.new(5) { [model.create_rating, model.create_rating] }
@@ -142,12 +142,12 @@ module OpenSkill
           weights: [[1, 2], [2, 1], [1, 2], [3, 1], [1, 2]]
         )
 
-        check_expected(@data, 'margins', result)
+        check_expected(@data, "margins", result)
       end
 
       def test_calculate_ratings_with_limit_sigma
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma, margin: 2.0)
 
         team1 = [model.create_rating]
@@ -160,12 +160,12 @@ module OpenSkill
           limit_sigma: true
         )
 
-        check_expected(@data, 'limit_sigma', result)
+        check_expected(@data, "limit_sigma", result)
       end
 
       def test_calculate_ratings_with_ties
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma)
 
         team1 = [model.create_rating]
@@ -177,12 +177,12 @@ module OpenSkill
           ranks: [1, 2, 1]
         )
 
-        check_expected(@data, 'ties', result)
+        check_expected(@data, "ties", result)
       end
 
       def test_calculate_ratings_with_weights
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma)
 
         team1 = [model.create_rating, model.create_rating, model.create_rating]
@@ -196,12 +196,12 @@ module OpenSkill
           weights: [[2, 0, 0], [1, 2], [0, 0, 1], [0, 1]]
         )
 
-        check_expected(@data, 'weights', result)
+        check_expected(@data, "weights", result)
       end
 
       def test_calculate_ratings_with_balance
-        mu = @data['model']['mu']
-        sigma = @data['model']['sigma']
+        mu = @data["model"]["mu"]
+        sigma = @data["model"]["sigma"]
         model = PlackettLuce.new(mu: mu, sigma: sigma, balance: true)
 
         team1 = [model.create_rating, model.create_rating]
@@ -212,7 +212,7 @@ module OpenSkill
           ranks: [1, 2]
         )
 
-        check_expected(@data, 'balance', result)
+        check_expected(@data, "balance", result)
       end
 
       def test_calculate_ratings_validation_errors
@@ -230,7 +230,7 @@ module OpenSkill
         assert_raises(ArgumentError) { @model.calculate_ratings([[], team2]) }
 
         # Invalid ranks
-        assert_raises(ArgumentError) { @model.calculate_ratings([team1, team2], ranks: 'invalid') }
+        assert_raises(ArgumentError) { @model.calculate_ratings([team1, team2], ranks: "invalid") }
         assert_raises(ArgumentError) { @model.calculate_ratings([team1, team2], ranks: [1]) }
 
         # Invalid scores
@@ -349,10 +349,10 @@ module OpenSkill
         result.each_with_index do |team, team_idx|
           team.each_with_index do |player, player_idx|
             expected_data = teams_data["team_#{team_idx + 1}"][player_idx]
-            assert_in_delta expected_data['mu'], player.mu, 0.0001,
-                            "Mismatch in team #{team_idx + 1}, player #{player_idx} mu"
-            assert_in_delta expected_data['sigma'], player.sigma, 0.0001,
-                            "Mismatch in team #{team_idx + 1}, player #{player_idx} sigma"
+            assert_in_delta expected_data["mu"], player.mu, 0.0001,
+              "Mismatch in team #{team_idx + 1}, player #{player_idx} mu"
+            assert_in_delta expected_data["sigma"], player.sigma, 0.0001,
+              "Mismatch in team #{team_idx + 1}, player #{player_idx} sigma"
           end
         end
       end
